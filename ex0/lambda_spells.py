@@ -1,9 +1,5 @@
 #!/usr/bin/python3
 
-from typing import Any, Iterable
-from collections.abc import Callable
-
-
 def artifact_sorter(artifacts: list[dict]) -> list[dict]:
     return sorted(artifacts, key=lambda artifact: -artifact["power"])
 
@@ -20,23 +16,23 @@ def power_filter(mages: list[dict], min_power: int) -> list[dict]:
 def spell_transformer(spells: list[str]) -> list[str]:
     return list(
         map(
-            lambda spell: f"*{spell}*",
+            lambda spell: f"* {spell} *",
             spells,
         )
     )
 
 
 def mage_stats(mages: list[dict]) -> dict:
-
-    def avg(iter: Iterable[Any], key: Callable) -> float:
-        length = len(iter)
-        values = [key(el) for el in iter]
-        return sum(values) / length
-
     return {
-        "max_power": max(mages, key=lambda mage: mage["power"]),
-        "min_power": min(mages, key=lambda mage: mage["power"]),
-        "avg_power": round(avg(mages, key=lambda mage: mage["power"]), 2),
+        "max_power": max(mages, key=lambda mage: mage["power"])["power"],
+        "min_power": min(mages, key=lambda mage: mage["power"])["power"],
+        "avg_power": round(
+            sum([
+                (lambda mage: mage["power"])(el)
+                for el in mages
+            ]) / len(mages),
+            2
+        ),
     }
 
 
