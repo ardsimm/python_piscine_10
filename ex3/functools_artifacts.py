@@ -39,15 +39,15 @@ def spell_dispatcher() -> Callable[[Any], str]:
         return "Unknown spell type"
 
     @dispatcher.register(int)
-    def _(damage: int) -> Callable[[int], str]:
+    def _(damage: int) -> str:
         return f"Damage spell: {damage} damage"
 
     @dispatcher.register(str)
-    def _(ench: str) -> Callable[[int], str]:
+    def _(ench: str) -> str:
         return f"Enchantment: {ench}"
 
     @dispatcher.register(list)
-    def _(spells: list) -> Callable[[int], str]:
+    def _(spells: list) -> str:
         return f"Multi-cast: {len(spells)} spells"
 
     return dispatcher
