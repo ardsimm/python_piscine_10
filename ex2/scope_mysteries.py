@@ -1,21 +1,20 @@
 #!/usr/bin/python3
 
 from collections.abc import Callable
-from typing import Any, Optional
+from typing import Any, Union
 
 
-def mage_counter() -> Callable:
+def mage_counter() -> Callable[[], int]:
     i = 0
 
     def counter() -> int:
         nonlocal i
         i += 1
         return i
-
     return counter
 
 
-def spell_accumulator(initial_power: int) -> Callable:
+def spell_accumulator(initial_power: int) -> Callable[[int], int]:
     power = initial_power
 
     def accumulator(amount: int) -> int:
@@ -26,19 +25,22 @@ def spell_accumulator(initial_power: int) -> Callable:
     return accumulator
 
 
-def enchantment_factory(enchantment_type: str) -> Callable:
+def enchantment_factory(enchantment_type: str) -> Callable[[str], str]:
     return lambda item_name: (
         f"{enchantment_type.capitalize()} {item_name.capitalize()}"
     )
 
 
-def memory_vault() -> dict[str, Callable]:
+def memory_vault() -> dict[str, Union[
+    Callable[[Any, Any], None],
+    Callable[[Any], Any]
+]]:
     vault = {}
 
     def store(key: Any, value: Any) -> None:
         vault[key] = value
 
-    def recall(key: Any) -> Optional[Any]:
+    def recall(key: Any) -> Any:
         return vault.get(key) or "Memory not found"
 
     return {"store": store, "recall": recall}
