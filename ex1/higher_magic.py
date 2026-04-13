@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 
-from typing import Tuple
 from collections.abc import Callable
+
+
+PLAYER_NAME = "BURLAG COURTE QUEUE"
 
 
 def healing_word(target: str, power: int) -> str:
@@ -13,10 +15,10 @@ def eldritch_blast(target: str, power: int) -> str:
 
 
 def spell_combiner(spell1: Callable, spell2: Callable) -> Callable:
-    def combiner() -> Tuple[str, str]:
+    def combiner(target: str, power: int) -> tuple[str, str]:
         return (
-            spell1("BURLAG COURTE ÉPÉE", 42),
-            spell2("BURLAG COURTE ÉPÉE", 42)
+            spell1(target, power),
+            spell2(target, power)
         )
     return combiner
 
@@ -32,7 +34,7 @@ def power_amplifier(base_spell: Callable, multiplier: int) -> Callable:
 
 def conditional_caster(condition: Callable, spell: Callable) -> Callable:
     def conditioned_spell(target: str, power: int) -> str:
-        if condition():
+        if condition(target, power):
             return spell(target, power)
         else:
             return "Spell fizzled"
@@ -53,7 +55,7 @@ def main() -> None:
         spell_combiner(
             healing_word,
             eldritch_blast
-        )()
+        )(PLAYER_NAME, 42)
     )
 
     print("\nTesting power amplifier...")
@@ -62,24 +64,24 @@ def main() -> None:
         power_amplifier(
             eldritch_blast,
             5
-        )("BURLAG COURTE ÉPÉE", 5)
+        )(PLAYER_NAME, 5)
     )
 
     print("\nTesting Conditional caster...")
     print("With condition -> False:")
     print(
         conditional_caster(
-            condition=lambda: False,
+            condition=lambda target, power: target and power > 0,
             spell=eldritch_blast
-        )("BURLAG COURTE ÉPÉE", 42)
+        )("", -1)
     )
 
-    print("With condition -> True:")
+    print("\nWith condition -> True:")
     print(
         conditional_caster(
-            condition=lambda: True,
+            condition=lambda target, power: target and power > 0,
             spell=healing_word
-        )("BURLAG COURTE ÉPÉE", 42)
+        )(PLAYER_NAME, 42)
     )
 
     print("\nTesting Spell sequence...")
@@ -91,7 +93,7 @@ def main() -> None:
                 eldritch_blast,
                 healing_word
             ]
-        )("BURLAG COURTE ÉPÉE", 42)
+        )(PLAYER_NAME, 42)
     )
 
 
